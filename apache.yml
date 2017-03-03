@@ -1,0 +1,25 @@
+---
+- name: This is apache httpd installation
+  hosts: all
+  remote_user: ec2-user
+  sudo: yes
+  vars:
+    http_port: 80
+    max_clients: 200
+    remote_user: ec2-user
+
+
+
+  tasks:
+  - name: Installing Latest version of Apache
+    yum: pkg=httpd state=latest
+  - name: Copying the demo file
+    template: src=./index.html dest=/usr/bin owner=apache group=apache mode=0775
+  - name: (Enable it on System Boot)
+    service: name=httpd enabled=yes
+    notify:
+    - start apache
+  handlers:
+    - name: start apache
+      service: name=httpd state=started
+
