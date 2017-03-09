@@ -1,25 +1,22 @@
 ---
-- name: This is apache httpd installation
-  hosts: all
-  remote_user: miracle
-  sudo: yes
+- hosts: all
   vars:
     http_port: 80
     max_clients: 200
-    remote_user: miracle
-
-
-
+  sudo: yes
+  remote_user: ec2-user
   tasks:
-  - name: Installing Latest version of Apache
-    yum: pkg=httpd state=latest
-  - name: Copying the demo file
-    template: src=./index.html dest=/usr/bin owner=apache group=apache mode=0775
-  - name: (Enable it on System Boot)
-    service: name=httpd enabled=yes
+  - name: ensure apache is at the latest version
+    yum: name=httpd state=latest
     notify:
-    - start apache
+    - restart apache
+  - name: ensure apache is running (and enable it at boot)
+    yum: name=httpd
   handlers:
-    - name: start apache
-      service: name=httpd state=started
+    - name: restart apache
+      yum: name=httpd
 
+
+                                                                                                         
+                                                                                                       
+                
